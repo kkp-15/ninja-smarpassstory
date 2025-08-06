@@ -12,7 +12,7 @@
 <!-- ✅ OGP設定 -->
 <meta property="og:title" content="スマホパスストーリー - 回して作る爆笑文章ゲーム">
 <meta property="og:description" content="スマホを回して順番に入力！友達・家族・飲み会で盛り上がる無料パーティーゲーム。スマホ1台でOK！">
-<meta property="og:image" content="https://スマホパスストーリーのカード画像URLをここに">
+<meta property="og:image" content="https://smarpassstory.kkpwebninja.com/card.png"><!-- ←カード画像URLに差し替え -->
 <meta property="og:url" content="https://smarpassstory.kkpwebninja.com">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -41,9 +41,6 @@
   #screen {
     padding: 2rem;
   }
-  .hidden {
-    display: none;
-  }
   .btn {
     display: inline-block;
     padding: 1rem 2rem;
@@ -58,13 +55,11 @@
   .btn:active {
     background: #cc6600;
   }
-  .dark-screen {
-    background: black;
-    color: white;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  input[type="text"] {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    width: 80%;
+    margin-top: 1rem;
   }
   #footer {
     margin-top: 3rem;
@@ -84,34 +79,30 @@
 </div>
 
 <script>
-  // ====== 質問リスト ======
-  const questions = ["いつ？", "どこで？", "誰が？", "何をした？"];
+  // ====== 質問リスト（助詞や動詞を自動追加） ======
+  const questions = [
+    { text: "いつ？", placeholder: "例：昨日の夜", suffix: "" },
+    { text: "どこで？（「で」は自動追加）", placeholder: "例：コンビニ", suffix: "で" },
+    { text: "誰が？（「が」は自動追加）", placeholder: "例：忍者", suffix: "が" },
+    { text: "何をした？（「した」は自動追加）", placeholder: "例：フラダンス", suffix: "した" }
+  ];
+
   let answers = [];
   let step = 0;
 
-  // ====== 暗転画面を表示 ======
-  function showPassScreen(message, nextAction) {
-    const screen = document.getElementById("screen");
-    screen.innerHTML = `
-      <div class="dark-screen">
-        <p style="font-size:1.5rem; margin-bottom:2rem;">${message}</p>
-        <button class="btn" onclick="${nextAction}">準備できた！</button>
-      </div>
-    `;
-  }
-
-  // ====== 入力画面 ======
+  // ====== 質問画面の表示 ======
   function showQuestion() {
+    const q = questions[step];
     const screen = document.getElementById("screen");
     screen.innerHTML = `
-      <h2>${questions[step]}</h2>
-      <input type="text" id="answer" style="font-size:1.2rem; padding:0.5rem; width:80%;" autofocus>
+      <h2>${q.text}</h2>
+      <input type="text" id="answer" placeholder="${q.placeholder}" autofocus>
       <br>
       <button class="btn" onclick="saveAnswer()">送信</button>
     `;
   }
 
-  // ====== 回答保存 ======
+  // ====== 回答保存と次へ ======
   function saveAnswer() {
     const val = document.getElementById("answer").value.trim();
     if (val === "") return alert("入力してください！");
@@ -119,15 +110,17 @@
 
     step++;
     if (step < questions.length) {
-      showPassScreen("次の人にスマホを渡してください", "showQuestion()");
+      showQuestion();
     } else {
-      showPassScreen("全員集まってスマホを見てください", "showResult()");
+      showResult();
     }
   }
 
   // ====== 結果表示 ======
   function showResult() {
-    const sentence = answers.join(" × ");
+    const sentence = questions
+      .map((q, i) => answers[i] + q.suffix)
+      .join(" × ");
     const screen = document.getElementById("screen");
     screen.innerHTML = `
       <h2>🎉 結果発表 🎉</h2>
@@ -136,8 +129,8 @@
     `;
   }
 
-  // ====== 最初の人に渡す暗転画面 ======
-  showPassScreen("最初の人にスマホを渡してください", "showQuestion()");
+  // ====== 初期表示 ======
+  showQuestion();
 </script>
 
 </body>
