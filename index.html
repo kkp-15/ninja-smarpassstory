@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スマホパスストーリー - 回して作る爆笑文章ゲーム</title>
+
+<!-- ✅ SEO設定 -->
+<meta name="description" content="スマホを回して順番に入力！『いつ・どこで・誰が・何をした』をつなげて爆笑ストーリーを作る無料ゲーム。友達・家族・飲み会で盛り上がる！スマホ1台で遊べます。">
+<meta name="keywords" content="スマホパスストーリー, いつどこでゲーム, 回して遊ぶ, 宴会ゲーム, パーティーゲーム, オフライン, 無料">
+
+<!-- ✅ OGP設定 -->
+<meta property="og:title" content="スマホパスストーリー - 回して作る爆笑文章ゲーム">
+<meta property="og:description" content="スマホを回して順番に入力！友達・家族・飲み会で盛り上がる無料パーティーゲーム。スマホ1台でOK！">
+<meta property="og:image" content="https://スマホパスストーリーのカード画像URLをここに">
+<meta property="og:url" content="https://smarpassstory.kkpwebninja.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ✅ Google Analytics（いつものアナリティクス） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2LM85GJN0L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-2LM85GJN0L');
+</script>
+
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    margin: 0;
+    background-color: #f8f8f8;
+  }
+  h1 {
+    background: #ffcc66;
+    padding: 1rem;
+    margin: 0;
+  }
+  #screen {
+    padding: 2rem;
+  }
+  .hidden {
+    display: none;
+  }
+  .btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    margin-top: 2rem;
+    font-size: 1.2rem;
+    background: #ff9933;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .btn:active {
+    background: #cc6600;
+  }
+  .dark-screen {
+    background: black;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #footer {
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+
+<h1>📱 スマホパスストーリー</h1>
+<div id="screen"></div>
+
+<div id="footer">
+  X <a href="https://x.com/kkp_webninja" target="_blank">@kkp_webninja</a> <br>
+  🏯 <a href="https://kkpwebninja.com" target="_blank">web忍者の本丸</a><br>
+</div>
+
+<script>
+  // ====== 質問リスト ======
+  const questions = ["いつ？", "どこで？", "誰が？", "何をした？"];
+  let answers = [];
+  let step = 0;
+
+  // ====== 暗転画面を表示 ======
+  function showPassScreen(message, nextAction) {
+    const screen = document.getElementById("screen");
+    screen.innerHTML = `
+      <div class="dark-screen">
+        <p style="font-size:1.5rem; margin-bottom:2rem;">${message}</p>
+        <button class="btn" onclick="${nextAction}">準備できた！</button>
+      </div>
+    `;
+  }
+
+  // ====== 入力画面 ======
+  function showQuestion() {
+    const screen = document.getElementById("screen");
+    screen.innerHTML = `
+      <h2>${questions[step]}</h2>
+      <input type="text" id="answer" style="font-size:1.2rem; padding:0.5rem; width:80%;" autofocus>
+      <br>
+      <button class="btn" onclick="saveAnswer()">送信</button>
+    `;
+  }
+
+  // ====== 回答保存 ======
+  function saveAnswer() {
+    const val = document.getElementById("answer").value.trim();
+    if (val === "") return alert("入力してください！");
+    answers.push(val);
+
+    step++;
+    if (step < questions.length) {
+      showPassScreen("次の人にスマホを渡してください", "showQuestion()");
+    } else {
+      showPassScreen("全員集まってスマホを見てください", "showResult()");
+    }
+  }
+
+  // ====== 結果表示 ======
+  function showResult() {
+    const sentence = answers.join(" × ");
+    const screen = document.getElementById("screen");
+    screen.innerHTML = `
+      <h2>🎉 結果発表 🎉</h2>
+      <p style="font-size:1.5rem; font-weight:bold; margin:2rem 0;">${sentence}</p>
+      <button class="btn" onclick="location.reload()">もう一回</button>
+    `;
+  }
+
+  // ====== 最初の人に渡す暗転画面 ======
+  showPassScreen("最初の人にスマホを渡してください", "showQuestion()");
+</script>
+
+</body>
+</html>
