@@ -102,6 +102,15 @@
     `;
   }
 
+  // ====== 次の人に渡す画面 ======
+  function showPassScreen(nextAction, message) {
+    const screen = document.getElementById("screen");
+    screen.innerHTML = `
+      <h2 style="margin-top:3rem;">${message}</h2>
+      <button class="btn" onclick="${nextAction}">準備できた！</button>
+    `;
+  }
+
   // ====== 回答保存と次へ ======
   function saveAnswer() {
     const val = document.getElementById("answer").value.trim();
@@ -110,9 +119,9 @@
 
     step++;
     if (step < questions.length) {
-      showQuestion();
+      showPassScreen("showQuestion()", "次の人にスマホを渡してください");
     } else {
-      showResult();
+      showPassScreen("showResult()", "全員集まってください");
     }
   }
 
@@ -130,7 +139,7 @@
   }
 
   // ====== 初期表示 ======
-  showQuestion();
+  showPassScreen("showQuestion()", "最初の人にスマホを渡してください");
 </script>
 
 </body>
